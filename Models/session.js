@@ -72,10 +72,23 @@ const sessionschema = new mongoose.Schema({
     type: Number,
    default: null,
 } ,
+Somme1 : { 
+    type: Number,
+   default: null,
+} ,  
 
+Somme2 : { 
+    type: Number,
+   default: null,
+} ,
  
 
 });
+
+sessionschema.pre('save', function (next) {
+    this.Somme = (this.Somme1 || 0) + (this.Somme2 || 0);
+    next();
+  });  
 
 sessionschema.virtual('id').get(function () {
     return this._id.toHexString();

@@ -43,57 +43,7 @@ router.put('/:id', async (req, res) => {
 });
 
 
-router.put('/:sessionId/postes/:postName/increment', async (req, res) => {
-  try {
-    const { sessionId, postName } = req.params;
-
-    const session = await Session.findById(sessionId);
-
-    if (!session) {
-      return res.status(404).json({ message: 'Session not found' });
-    }
-
-
-
-    const post = session.postes.find((p) => p.name === postName);
-
-    if (!post) {
-      return res.status(404).json({ message: 'Post not found' });
-    }
-
-    // Increment "compteur" and "CompteurR" for the post
-    post.compteur++;
-    post.CompteurR++;
-
-    // Calculate the sum of "compteur" values with special handling for posts 5 and 6
-    let sum = 0;
-    for (const poste of session.postes) {
-      if (poste.name === '5' || poste.name === '6') {
-        sum += (poste.compteur || 0) * 2.5; // Multiply by 2.5 for posts 5 and 6
-      } else {
-        sum += (poste.compteur || 0) * 1.5; // Multiply by 1.5 for all other posts
-      }
-    }
-
-    let summ = 0;
-    for (const poste of session.postes) {
-      summ += poste.compteur || 0;
-    }
-    // Update the "SommeCopmteur" field in the session with the sum for the specific post
-    session.SommeCopmteur = summ;
-    
-    // Update the "Somme" field with the calculated sum
-    session.Somme = sum;
-
-    // Save the updated session
-    await session.save();
-
-    return res.status(200).json({ message: 'Compteur incremented successfully', session });
-  } catch (error) {
-    console.error('Failed to increment compteur', error);
-    return res.status(500).json({ message: 'Internal server error' });
-  }
-});
+ 
   
 router.get('/sumcompteurs/:sessionId', async (req, res) => {
     try {
@@ -321,55 +271,7 @@ router.delete('/:id', (req, res)=>{
   })
 }) ;
 
-router.put('/:sessionId/postes/:postName/incrementt', async (req, res) => {
-  try {
-    const { sessionId, postName } = req.params;
-
-    const session = await Session.findById(sessionId);
-
-    if (!session) {
-      return res.status(404).json({ message: 'Session not found' });
-    }
-
-    const post = session.postes.find((p) => p.name === postName);
-
-    if (!post) {
-      return res.status(404).json({ message: 'Post not found' });
-    }
-
-    // Increment "compteur" and "CompteurR" for the post
-    post.compteur++;
-    post.CompteurR++;
-
-    // Calculate the sum of "compteur" values with special handling for posts 5 and 6
-    let sum = 0;
-    for (const poste of session.postes) {
-      if (poste.name === '5' || poste.name === '6') {
-        sum += (poste.compteur || 0) * 4; // Multiply by 2.5 for posts 5 and 6
-      } else {
-        sum += (poste.compteur || 0) * 3; // Multiply by 1.5 for all other posts
-      }
-    }
-
-    let summ = 0;
-    for (const poste of session.postes) {
-      summ += poste.compteur || 0;
-    }
-    // Update the "SommeCopmteur" field in the session with the sum for the specific post
-    session.SommeCopmteur = summ;
-
-    // Update the "Somme" field with the calculated sum
-    session.Somme = sum;
-    
-    // Save the updated session
-    await session.save();
-
-    return res.status(200).json({ message: 'Compteur incremented successfully', session });
-  } catch (error) {
-    console.error('Failed to increment compteur', error);
-    return res.status(500).json({ message: 'Internal server error' });
-  }
-});
+ 
 
 router.get('/sumMonth2', async (req, res) => {
   try {
@@ -460,30 +362,29 @@ function getMonthName(month) {
     }
 
     // Increment "compteur" and "CompteurR" for the post
-    post.compteur++;
-    post.CompteurR++;
+     post.CompteurR++;
 
     // Calculate the sum for this route handler
     let sum = 0;
     for (const poste of session.postes) {
       if (poste.name === '5' || poste.name === '6') {
-        sum += (poste.compteur || 0) * 4; // Multiply by 2.5 for posts 5 and 6
+        sum += (poste.CompteurR || 0) * 4;  
       } else {
-        sum += (poste.compteur || 0) * 3; // Multiply by 1.5 for all other posts
+        sum += (poste.CompteurR || 0) * 3;  
       }
     }
 
     let summ = 0;
     for (const poste of session.postes) {
-      summ += poste.compteur || 0;
+      summ += (poste.compteur || 0) + (poste.CompteurR || 0);
     }
 
     // Update the "SommeCopmteur" field in the session with the sum for the specific post
     session.SommeCopmteur = summ;
+    session.Somme2 = sum;
 
     // Update the "Somme" field with the calculated sum for this route handler
-    session.Somme = sum;
-
+ 
     // Save the updated session
     await session.save();
 
@@ -494,7 +395,7 @@ function getMonthName(month) {
   }
 });
 
- router.put('/:sessionId/postes/:postName/increment', async (req, res) => {
+router.put('/:sessionId/postes/:postName/increment', async (req, res) => {
   try {
     const { sessionId, postName } = req.params;
     const session = await Session.findById(sessionId);
@@ -509,30 +410,27 @@ function getMonthName(month) {
       return res.status(404).json({ message: 'Post not found' });
     }
 
-    // Increment "compteur" and "CompteurR" for the post
+    // Increment "compteur" for the post
     post.compteur++;
-    post.CompteurR++;
 
-    // Calculate the sum for this route handler
+    // Calculate the sum for this route handler and update SommeCopmteur
     let sum = 0;
     for (const poste of session.postes) {
       if (poste.name === '5' || poste.name === '6') {
-        sum += (poste.compteur || 0) * 2.5; // Multiply by 2.5 for posts 5 and 6
+        sum += (poste.compteur || 0) * 2.5; 
       } else {
-        sum += (poste.compteur || 0) * 1.5; // Multiply by 1.5 for all other posts
+        sum += (poste.compteur || 0) * 1.5; 
       }
     }
 
     let summ = 0;
     for (const poste of session.postes) {
-      summ += poste.compteur || 0;
+      summ += (poste.compteur || 0) + (poste.CompteurR || 0);
     }
 
     // Update the "SommeCopmteur" field in the session with the sum for the specific post
     session.SommeCopmteur = summ;
-
-    // Update the "Somme" field with the calculated sum for this route handler
-    session.Somme = sum;
+    session.Somme1 = sum;
 
     // Save the updated session
     await session.save();
@@ -544,10 +442,7 @@ function getMonthName(month) {
   }
 });
 
-  
-
-
-
+ 
 
 
 module.exports =router;
