@@ -212,7 +212,7 @@ router.put('/:sessionId/postes/:postName/decrement', async (req, res) => {
       return res.status(404).json({ message: 'Post not found' });
     }
 
-     post.CompteurR--;
+     post.CompteurD--;
 
   
      await session.save();
@@ -363,6 +363,7 @@ function getMonthName(month) {
 
     // Increment "compteur" and "CompteurR" for the post
      post.CompteurR++;
+     postCompteurD++;
 
     // Calculate the sum for this route handler
     let sum = 0;
@@ -412,6 +413,8 @@ router.put('/:sessionId/postes/:postName/increment', async (req, res) => {
 
     // Increment "compteur" for the post
     post.compteur++;
+    postCompteurD++;
+
 
     // Calculate the sum for this route handler and update SommeCopmteur
     let sum = 0;

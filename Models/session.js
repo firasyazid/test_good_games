@@ -38,13 +38,13 @@ const sessionschema = new mongoose.Schema({
             message: 'Exceeded the maximum number of postes (7).',
         },
         default: [
-            { name: '1', compteur: null, CompteurR: null },
-            { name: '2', compteur: null,CompteurR: null },
-            { name: '3',compteur: null,CompteurR: null },
-            { name: '4', compteur: null,CompteurR: null },
-            { name: '5',compteur: null,CompteurR: null },
-            { name: '6', compteur: null,CompteurR: null },
-            { name: '7',compteur: null,CompteurR: null },
+            { name: '1', compteur: null, CompteurR: null,CompteurD: null  },
+            { name: '2', compteur: null,CompteurR: null, CompteurD: null},
+            { name: '3',compteur: null,CompteurR: null,CompteurD: null },
+            { name: '4', compteur: null,CompteurR: null,CompteurD: null },
+            { name: '5',compteur: null,CompteurR: null,CompteurD: null },
+            { name: '6', compteur: null,CompteurR: null ,CompteurD: null},
+            { name: '7',compteur: null,CompteurR: null,CompteurD: null},
           ],
 
 
