@@ -363,7 +363,7 @@ function getMonthName(month) {
 
     // Increment "compteur" and "CompteurR" for the post
      post.CompteurR++;
-     postCompteurD++;
+     post.CompteurD++;
 
     // Calculate the sum for this route handler
     let sum = 0;
@@ -413,7 +413,7 @@ router.put('/:sessionId/postes/:postName/increment', async (req, res) => {
 
     // Increment "compteur" for the post
     post.compteur++;
-    postCompteurD++;
+    post.CompteurD++;
 
 
     // Calculate the sum for this route handler and update SommeCopmteur
