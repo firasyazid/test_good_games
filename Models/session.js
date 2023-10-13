@@ -28,6 +28,10 @@ const sessionschema = new mongoose.Schema({
                     type: Number,
                     default: null,
                 },
+                CompteurD: {
+                    type: Number,
+                    default: null,
+                },
 
             },
         ],
