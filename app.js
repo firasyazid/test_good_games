@@ -7,6 +7,7 @@ const authJwt = require('./helpers/jwt');
 const errorHandler = require('./helpers/error-handler');
  require('dotenv/config');
 const api = process.env.API_URL;
+const port = process.env.PORT || 3001; 
 
  
 const usersRouter = require('./routers/user.js');
@@ -39,8 +40,13 @@ mongoose.connect(process.env.CONNECTION_STRING, {
 .catch((err)=> {
     console.log(err);
 })
- app.listen(3000, ()=>{
-     console.log('server is running http://localhost:3000');
+
+app.get('/', (req, res) => { 
+    res.send('Hello, Azure! This is a Node.js application.'); 
+  }); 
+    
+ app.listen(port, ()=>{
+    console.log(`Server is running on port ${port}`); 
 })
 
 

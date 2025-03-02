@@ -276,69 +276,63 @@ router.delete('/:id', (req, res)=>{
 router.get('/sumMonth2', async (req, res) => {
   try {
     const currentDate = new Date();
-    const currentMonth = currentDate.getMonth() + 1;  
+    const currentMonth = currentDate.getMonth() + 1;
+    const currentYear = currentDate.getFullYear(); // Get the current year
 
+    // Aggregate sessions grouped by month and year
     const sessions = await Session.aggregate([
       {
         $group: {
           _id: {
-            month: { $month: '$dateSession' },
+            year: { $year: '$dateSession' },  // Group by year
+            month: { $month: '$dateSession' } // Group by month
           },
-          totalSomme: { $sum: '$Somme' },
-        },
+          totalSomme: { $sum: '$Somme' }
+        }
+      },
+      {
+        $match: {
+          '_id.year': currentYear // Only include sessions from the current year
+        }
       },
       {
         $sort: {
-          '_id.month': -1, 
-        },
-      },
+          '_id.year': -1,  // Sort by year (latest first)
+          '_id.month': -1  // Sort by month (latest first)
+        }
+      }
     ]);
 
+    // Store month sums in an object
     const monthlySum = {};
-
     sessions.forEach((session) => {
-      const month = session._id.month;
-      const monthName = getMonthName(month);
+      const monthName = getMonthName(session._id.month);
       monthlySum[monthName] = session.totalSomme;
     });
 
+    // Ensure all 12 months are included, even if they have 0 sum
     const orderedMonthlySum = {};
-
-    for (let i = 0; i < 12; i++) {
-      const monthIndex = (currentMonth + 11 - i) % 12 + 1;  
+    for (let i = 11; i >= 0; i--) {
+      const monthIndex = (currentMonth - 1 - i + 12) % 12 + 1;
       const monthName = getMonthName(monthIndex);
-      if (monthlySum.hasOwnProperty(monthName)) {
-        orderedMonthlySum[monthName] = monthlySum[monthName];
-      } else {
-        orderedMonthlySum[monthName] = 0;
-      }
+      orderedMonthlySum[monthName] = monthlySum[monthName] || 0;
     }
 
-    return res.send(orderedMonthlySum);
+    return res.json(orderedMonthlySum);
   } catch (error) {
     console.error('Failed to calculate sum of sessions', error);
     return res.status(500).json({ message: 'Internal server error' });
   }
 });
 
+// Function to convert month number to name
 function getMonthName(month) {
   const monthNames = [
-    'January',
-    'February',
-    'March',
-    'April',
-    'May',
-    'June',
-    'July',
-    'August',
-    'September',
-    'October',
-    'November',
-    'December',
+    'January', 'February', 'March', 'April', 'May', 'June',
+    'July', 'August', 'September', 'October', 'November', 'December'
   ];
   return monthNames[month - 1];
 }
-
 
 
 
@@ -368,7 +362,7 @@ function getMonthName(month) {
     // Calculate the sum for this route handler
     let sum = 0;
     for (const poste of session.postes) {
-      if (poste.name === '5' || poste.name === '6') {
+      if ( poste.name ==='4' || poste.name === '5' || poste.name === '6') {
         sum += (poste.CompteurR || 0) * 4;  
       } else {
         sum += (poste.CompteurR || 0) * 3;  
@@ -415,11 +409,10 @@ router.put('/:sessionId/postes/:postName/increment', async (req, res) => {
     post.CompteurD++;
     post.compteur++;
  
-
     // Calculate the sum for this route handler and update SommeCopmteur
     let sum = 0;
     for (const poste of session.postes) {
-      if (poste.name === '5' || poste.name === '6') {
+      if ( poste.name === '4'  || poste.name === '5' || poste.name === '6') {
         sum += (poste.compteur || 0) * 2.5; 
       } else {
         sum += (poste.compteur || 0) * 1.5; 
